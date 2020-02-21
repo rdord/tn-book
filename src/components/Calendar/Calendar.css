@@ -166,10 +166,9 @@ main {
   transition: 0.5s ease-out;
 }
 
-.calendar .body .selected {
-  border-left: 10px solid transparent;
-  border-image: linear-gradient(45deg, #1a8fff 0%, #53cbf1 40%);
-  border-image-slice: 1;
+.calendar .body .selected,
+.calendar .body .selected:hover {
+  background-color: lightpink;
 }
 
 .calendar .body .row {

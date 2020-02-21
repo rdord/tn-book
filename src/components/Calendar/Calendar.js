@@ -13,13 +13,13 @@ const Calendar = props => {
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
-  const onDateClick = () => {};
+  const onDateClick = day => setSelectedDay(day);
 
   return (
     <div className='calendar'>
       <CalendarHeader currentMonth={currentMonth} nextMonth={nextMonth} prevMonth={prevMonth} />
       <CalendarDays currentMonth={currentMonth} />
-      <CalendarCells onDateClick={onDateClick} />
+      <CalendarCells currentMonth={currentMonth} selectedDay={selectedDay} onDateClick={onDateClick} />
       <CalendarFooter />
     </div>
   );

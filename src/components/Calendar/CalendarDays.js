@@ -12,8 +12,6 @@ const CalendarDays = ({ currentMonth }) => {
     days.push(formatedDay);
   }
 
-  console.log('days', days);
-
   return (
     <div className='days row'>
       {days.map((day, i) => (
