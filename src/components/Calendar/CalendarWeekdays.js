@@ -1,8 +1,8 @@
 import React from 'react';
 import './Calendar.css';
-import { startOfWeek, addDays, format } from 'date-fns';
+import { startOfWeek, addDays, format, addHours, getHours } from 'date-fns';
 
-const CalendarDays = ({ currentMonth }) => {
+const CalendarWeekdays = ({ currentMonth }) => {
   const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
   const days = [];
 
@@ -20,4 +20,4 @@ const CalendarDays = ({ currentMonth }) => {
   return <div className='days row'>{days}</div>;
 };
 
-export default CalendarDays;
+export default CalendarWeekdays;
