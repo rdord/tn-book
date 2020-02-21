@@ -9,18 +9,15 @@ const CalendarDays = ({ currentMonth }) => {
   for (let i = 0; i < 7; i++) {
     const day = addDays(startDate, i);
     const formatedDay = format(day, 'EEEE');
-    days.push(formatedDay);
+
+    days.push(
+      <div className='col col-center' key={day.toString()}>
+        {formatedDay}
+      </div>
+    );
   }
 
-  return (
-    <div className='days row'>
-      {days.map((day, i) => (
-        <div className='col col-center' key={i}>
-          {day}
-        </div>
-      ))}
-    </div>
-  );
+  return <div className='days row'>{days}</div>;
 };
 
 export default CalendarDays;
