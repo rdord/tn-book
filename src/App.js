@@ -22,7 +22,7 @@ function App() {
   const onAdminClick = status => setIsAdmin(!isAdmin);
 
   const onBookClick = appt => {
-    const prevAppoimentDuration = appointmentDuration - 1;
+    const prevAppoimentDuration = appointmentDuration;
     let hour = subHours(appt.start, prevAppoimentDuration);
     let allHours = [];
     setAppointments([...appointments, appt]);
