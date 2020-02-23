@@ -31,18 +31,26 @@ const TimePickerSlots = ({
   for (let i = 0; i <= workdayLength; i++) {
     const isSelectedHour = isSameHour(hour, selectedHour);
     const cloneHour = hour;
+    let isUnavailableHour = false;
+
+    unavailableHours.forEach(h => {
+      if (isSameHour(h, cloneHour)) {
+        isUnavailableHour = true;
+        return;
+      }
+    });
+
+    console.log('isUnavailableHour', isUnavailableHour);
 
     const hourSlot = (
       <div
-        className={`slot ${isSelectedHour ? 'selected' : ''}`}
+        className={`slot ${isUnavailableHour ? 'disabled' : isSelectedHour ? 'selected' : ''}`}
         onClick={() => onTimeClick(cloneHour)}
         key={hour.toString()}>
-        <div key={hour.toString()}>
-          {format(hour, 'HH:mm')}
-          <span className='disable-slot' onClick={() => setUnavailable(cloneHour)}>
-            x
-          </span>
-        </div>
+        {format(hour, 'HH:mm')}
+        <span className='disable-slot' onClick={() => setUnavailable([cloneHour])}>
+          x
+        </span>
       </div>
     );
 
