@@ -12,9 +12,10 @@ const TimePickerSlots = ({
   setUnavailable,
   isAdmin
 }) => {
-  let startHour = set(selectedDay, { hours: workdayStart });
-  let endHour = set(selectedDay, { hours: workdayEnd });
-  let workdayLength = differenceInHours(endHour, startHour);
+  const startHour = set(selectedDay, { hours: workdayStart });
+  const endHour = set(selectedDay, { hours: workdayEnd });
+  const workdayLength = differenceInHours(endHour, startHour);
+  const allWorkingHours = [];
 
   const slots = { morning: [], afternoon: [], evening: [] };
   const morningEnds = set(selectedDay, { hours: 12, minutes: 1 });
@@ -24,6 +25,10 @@ const TimePickerSlots = ({
   useEffect(() => {
     console.log('selectedHour', selectedHour);
   }, [selectedHour]);
+
+  useEffect(() => {
+    console.log('allWorkingHours', allWorkingHours);
+  }, [allWorkingHours]);
 
   useEffect(() => {
     console.log('unavailableHours', unavailableHours);
@@ -69,8 +74,36 @@ const TimePickerSlots = ({
     hour = addHours(hour, 1);
   }
 
+  const setDayUnavailable = () => {
+    if (isAdmin) {
+      let oneHour = set(startHour, { minutes: 0, seconds: 0 });
+      for (let i = 0; i <= workdayLength; i++) {
+        allWorkingHours.push(oneHour);
+        oneHour = addHours(oneHour, 1);
+      }
+    }
+
+    unavailableHours.forEach(uHour => {
+      allWorkingHours.forEach((wHour, index) => {
+        if (isSameHour(uHour, wHour)) {
+          allWorkingHours.splice(index, 1);
+        }
+      });
+    });
+
+    setUnavailable(allWorkingHours);
+  };
+
   return (
     <div className='slots row'>
+      {isAdmin ? (
+        <button
+          style={{ color: 'hotpink', position: 'absolute', right: '10px', top: '-19px' }}
+          onClick={setDayUnavailable}>
+          Set day as unavailable
+        </button>
+      ) : null}
+
       <div className='col col-start'>{slots.morning}</div>
       <div className='col col-center'>{slots.afternoon}</div>
       <div className='col col-end'>{slots.evening}</div>

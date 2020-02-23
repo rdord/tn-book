@@ -3,6 +3,10 @@
   text-align: center;
 }
 
+.timepicker .slots {
+  position: relative;
+}
+
 .timepicker .slots .col {
   display: flex;
   flex-direction: column;

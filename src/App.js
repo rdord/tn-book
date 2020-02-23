@@ -3,7 +3,7 @@ import './App.css';
 import Calendar from './components/Calendar/Calendar';
 import TimePicker from './components/TimePicker/TimePicker';
 import BookButton from './components/BookButton/BookButton';
-import { addHours } from 'date-fns';
+import { addHours, subHours } from 'date-fns';
 
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -22,11 +22,12 @@ function App() {
   const onAdminClick = status => setIsAdmin(!isAdmin);
 
   const onBookClick = appt => {
-    let hour = appt.start;
+    const prevAppoimentDuration = appointmentDuration - 1;
+    let hour = subHours(appt.start, prevAppoimentDuration);
     let allHours = [];
     setAppointments([...appointments, appt]);
 
-    for (let i = 0; i < appointmentDuration; i++) {
+    for (let i = 0; i < appointmentDuration + prevAppoimentDuration; i++) {
       allHours.push(hour);
       hour = addHours(hour, 1);
     }
@@ -43,7 +44,13 @@ function App() {
       <button style={{ color: 'hotpink', float: 'right', margin: '10px 10px -30px' }} onClick={onAdminClick}>
         Admin
       </button>
-      <Calendar selectedDay={selectedDay} onDateClick={onDateClick} />
+      <Calendar
+        workdayStart={workdayStart}
+        workdayEnd={workdayEnd}
+        selectedDay={selectedDay}
+        onDateClick={onDateClick}
+        isAdmin={isAdmin}
+      />
       <TimePicker
         workdayStart={workdayStart}
         workdayEnd={workdayEnd}
