@@ -1,36 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './TimePicker.css';
-import {
-  setHours,
-  differenceInHours,
-  addHours,
-  format,
-  roundToNearestMinutes,
-  setMinutes,
-  isBefore,
-  isAfter
-} from 'date-fns';
+import { differenceInHours, addHours, format, isBefore, isAfter, isSameHour, set } from 'date-fns';
 
-const TimePickerSlots = ({ workdayStart, workdayEnd, selectedDay, selectedHour, onTimeClick }) => {
-  let startHour = setHours(selectedDay, workdayStart);
-  let endHour = setHours(selectedDay, workdayEnd);
+const TimePickerSlots = ({
+  workdayStart,
+  workdayEnd,
+  selectedDay,
+  selectedHour,
+  onTimeClick,
+  unavailableHours,
+  setUnavailable
+}) => {
+  let startHour = set(selectedDay, { hours: workdayStart });
+  let endHour = set(selectedDay, { hours: workdayEnd });
   let workdayLength = differenceInHours(endHour, startHour);
 
-  const morning = [];
-  const afternoon = [];
-  const evening = [];
   const slots = { morning: [], afternoon: [], evening: [] };
-  let hour = setMinutes(roundToNearestMinutes(startHour), 0);
+  const morningEnds = set(selectedDay, { hours: 12, minutes: 1 });
+  const eveningStarts = set(selectedDay, { hours: 16 });
+  let hour = set(startHour, { minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    console.log('selectedHour', selectedHour);
+  }, [selectedHour]);
+
+  useEffect(() => {
+    console.log('unavailableHours', unavailableHours);
+  }, [unavailableHours]);
 
   for (let i = 0; i <= workdayLength; i++) {
-    const hourSlot = <div key={hour.toString()}>{format(hour, 'HH:mm')}</div>;
+    const isSelectedHour = isSameHour(hour, selectedHour);
+    const cloneHour = hour;
 
-    if (isBefore(hour, setHours(selectedDay, 12))) {
-      slots['morning'].push(hourSlot);
-    } else if (isAfter(hour, setHours(selectedDay, 16))) {
-      slots['evening'].push(hourSlot);
+    const hourSlot = (
+      <div
+        className={`slot ${isSelectedHour ? 'selected' : ''}`}
+        onClick={() => onTimeClick(cloneHour)}
+        key={hour.toString()}>
+        <div key={hour.toString()}>
+          {format(hour, 'HH:mm')}
+          <span className='disable-slot' onClick={() => setUnavailable(cloneHour)}>
+            x
+          </span>
+        </div>
+      </div>
+    );
+
+    if (isBefore(hour, morningEnds)) {
+      slots.morning.push(hourSlot);
+    } else if (isAfter(hour, eveningStarts)) {
+      slots.evening.push(hourSlot);
     } else {
-      slots['afternoon'].push(hourSlot);
+      slots.afternoon.push(hourSlot);
     }
 
     hour = addHours(hour, 1);

@@ -85,3 +85,7 @@ input {
   justify-content: flex-end;
   text-align: right;
 }
+
+.removed {
+  display: none;
+}

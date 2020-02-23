@@ -2,3 +2,34 @@
 .timepicker .slots .col {
   text-align: center;
 }
+
+.timepicker .slots .col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.timepicker .slot {
+  width: 70px;
+  cursor: pointer;
+  position: relative;
+}
+
+.timepicker .slot.selected {
+  background-color: lightpink;
+}
+
+.timepicker .slot.disabled {
+  color: rgb(204, 204, 204);
+  pointer-events: none;
+}
+
+.timepicker .slot .disable-slot {
+  position: absolute;
+  top: 3px;
+  right: -11px;
+  font-size: 11px;
+  font-weight: bold;
+  color: hotpink;
+}
