@@ -19,6 +19,7 @@ function App() {
   const onTimeClick = hour => setSelectedHour(hour);
   const setUnavailable = hours => setUnavailableHours([...unavailableHours, ...hours]);
   const setDuration = hours => setAppointmentDuration(hours);
+  const onAdminClick = status => setIsAdmin(!isAdmin);
 
   const onBookClick = appt => {
     let hour = appt.start;
@@ -39,6 +40,9 @@ function App() {
 
   return (
     <div className='App'>
+      <button style={{ color: 'hotpink', float: 'right', margin: '10px 10px -30px' }} onClick={onAdminClick}>
+        Admin
+      </button>
       <Calendar selectedDay={selectedDay} onDateClick={onDateClick} />
       <TimePicker
         workdayStart={workdayStart}
@@ -48,6 +52,7 @@ function App() {
         onTimeClick={onTimeClick}
         unavailableHours={unavailableHours}
         setUnavailable={setUnavailable}
+        isAdmin={isAdmin}
       />
       <BookButton onBookClick={onBookClick} selectedHour={selectedHour} duration={appointmentDuration} />
     </div>

@@ -9,7 +9,8 @@ const TimePickerSlots = ({
   selectedHour,
   onTimeClick,
   unavailableHours,
-  setUnavailable
+  setUnavailable,
+  isAdmin
 }) => {
   let startHour = set(selectedDay, { hours: workdayStart });
   let endHour = set(selectedDay, { hours: workdayEnd });
@@ -48,9 +49,12 @@ const TimePickerSlots = ({
         onClick={() => onTimeClick(cloneHour)}
         key={hour.toString()}>
         {format(hour, 'HH:mm')}
-        <span className='disable-slot' onClick={() => setUnavailable([cloneHour])}>
-          x
-        </span>
+
+        {isAdmin ? (
+          <span className='disable-slot' onClick={() => setUnavailable([cloneHour])}>
+            x
+          </span>
+        ) : null}
       </div>
     );
 
