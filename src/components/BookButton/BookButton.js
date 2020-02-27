@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import './BookButton.css';
 import { format, isDate } from 'date-fns';
+import { GlobalContext } from '../../context/GlobalState';
 
-const BookButton = ({ onBookClick, selectedHour, duration }) => {
+const BookButton = ({ onBookClick, selectedHour }) => {
+  const { appointmentDuration } = useContext(GlobalContext);
+
   const appt = {
     start: selectedHour,
-    duration: duration,
-    title: selectedHour ? `${format(selectedHour, 'd.MMM.yy HH:mm')} appointment` : null,
+    duration: appointmentDuration,
+    title: selectedHour && `${format(selectedHour, 'd.MMM.yy HH:mm')} appointment`,
     description: ''
   };
 

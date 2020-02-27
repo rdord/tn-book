@@ -4,6 +4,7 @@ import Calendar from './components/Calendar/Calendar';
 import TimePicker from './components/TimePicker/TimePicker';
 import BookButton from './components/BookButton/BookButton';
 import { addHours, subHours } from 'date-fns';
+import { GlobalProvider } from './context/GlobalState';
 
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -40,29 +41,31 @@ function App() {
   }, [unavailableHours]);
 
   return (
-    <div className='App'>
-      <button style={{ color: 'hotpink', float: 'right', margin: '10px 10px -30px' }} onClick={onAdminClick}>
-        Admin
-      </button>
-      <Calendar
-        workdayStart={workdayStart}
-        workdayEnd={workdayEnd}
-        selectedDay={selectedDay}
-        onDateClick={onDateClick}
-        isAdmin={isAdmin}
-      />
-      <TimePicker
-        workdayStart={workdayStart}
-        workdayEnd={workdayEnd}
-        selectedDay={selectedDay}
-        selectedHour={selectedHour}
-        onTimeClick={onTimeClick}
-        unavailableHours={unavailableHours}
-        setUnavailable={setUnavailable}
-        isAdmin={isAdmin}
-      />
-      <BookButton onBookClick={onBookClick} selectedHour={selectedHour} duration={appointmentDuration} />
-    </div>
+    <GlobalProvider>
+      <div className='App'>
+        <button style={{ color: 'hotpink', float: 'right', margin: '10px 10px -30px' }} onClick={onAdminClick}>
+          Admin
+        </button>
+        <Calendar
+          workdayStart={workdayStart}
+          workdayEnd={workdayEnd}
+          selectedDay={selectedDay}
+          onDateClick={onDateClick}
+          isAdmin={isAdmin}
+        />
+        <TimePicker
+          workdayStart={workdayStart}
+          workdayEnd={workdayEnd}
+          selectedDay={selectedDay}
+          selectedHour={selectedHour}
+          onTimeClick={onTimeClick}
+          unavailableHours={unavailableHours}
+          setUnavailable={setUnavailable}
+          isAdmin={isAdmin}
+        />
+        <BookButton onBookClick={onBookClick} selectedHour={selectedHour} duration={appointmentDuration} />
+      </div>
+    </GlobalProvider>
   );
 }
 
