@@ -50,16 +50,16 @@ const TimePickerSlots = ({
 
     const hourSlot = (
       <div
-        className={`slot ${isUnavailableHour ? 'disabled' : isSelectedHour ? 'selected' : ''}`}
+        className={`slot ${isUnavailableHour ? 'disabled' : isSelectedHour && 'selected'}`}
         onClick={() => onTimeClick(cloneHour)}
         key={hour.toString()}>
         {format(hour, 'HH:mm')}
 
-        {isAdmin ? (
+        {isAdmin && (
           <span className='disable-slot' onClick={() => setUnavailable([cloneHour])}>
             x
           </span>
-        ) : null}
+        )}
       </div>
     );
 
@@ -77,6 +77,7 @@ const TimePickerSlots = ({
   const setDayUnavailable = () => {
     if (isAdmin) {
       let oneHour = set(startHour, { minutes: 0, seconds: 0 });
+
       for (let i = 0; i <= workdayLength; i++) {
         allWorkingHours.push(oneHour);
         oneHour = addHours(oneHour, 1);
@@ -96,13 +97,13 @@ const TimePickerSlots = ({
 
   return (
     <div className='slots row'>
-      {isAdmin ? (
+      {isAdmin && (
         <button
           style={{ color: 'hotpink', position: 'absolute', right: '10px', top: '-19px' }}
           onClick={setDayUnavailable}>
           Set day as unavailable
         </button>
-      ) : null}
+      )}
 
       <div className='col col-start'>{slots.morning}</div>
       <div className='col col-center'>{slots.afternoon}</div>

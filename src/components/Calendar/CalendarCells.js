@@ -20,7 +20,7 @@ const CalendarCells = ({ currentMonth, selectedDay, onDateClick }) => {
 
       days.push(
         <div
-          className={`col cell ${!isCurrentMonthDay ? 'disabled' : isSelectedDay ? 'selected' : ''}`}
+          className={`col cell ${!isCurrentMonthDay ? 'disabled' : isSelectedDay && 'selected'}`}
           key={day.toString()}
           onClick={() => onDateClick(cloneDay)}>
           <span className='number'>{format(day, 'd')}</span>
