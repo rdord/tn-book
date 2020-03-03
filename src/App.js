@@ -12,13 +12,16 @@ function App() {
   const [workdayEnd, setWorkdayEnd] = useState(19);
   const [selectedDay, setSelectedDay] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState(null);
-  const [unavailableHours, setUnavailableHours] = useState([]);
+
+  // TODO: refactor to an {day: format(selectedDay, 'D'), times: []}
+  const [unavailable, setUnavailable] = useState([]);
+
   const [appointments, setAppointments] = useState([]);
   const [appointmentDuration, setAppointmentDuration] = useState(3);
 
   const onDateClick = day => setSelectedDay(day);
   const onTimeClick = hour => setSelectedHour(hour);
-  const setUnavailable = hours => setUnavailableHours([...unavailableHours, ...hours]);
+  const setUnavailableTimes = hours => setUnavailable([...unavailable, ...hours]);
   const setDuration = hours => setAppointmentDuration(hours);
   const onAdminClick = status => setIsAdmin(!isAdmin);
 
@@ -37,8 +40,8 @@ function App() {
   };
 
   useEffect(() => {
-    console.log('unavailableHours', unavailableHours);
-  }, [unavailableHours]);
+    console.log('unavailable', unavailable);
+  }, [unavailable]);
 
   return (
     <GlobalProvider>
@@ -59,11 +62,11 @@ function App() {
           selectedDay={selectedDay}
           selectedHour={selectedHour}
           onTimeClick={onTimeClick}
-          unavailableHours={unavailableHours}
-          setUnavailable={setUnavailable}
+          unavailable={unavailable}
+          setUnavailableTimes={setUnavailableTimes}
           isAdmin={isAdmin}
         />
-        <BookButton onBookClick={onBookClick} selectedHour={selectedHour} duration={appointmentDuration} />
+        <BookButton onBookClick={onBookClick} selectedHour={selectedHour} />
       </div>
     </GlobalProvider>
   );

@@ -13,9 +13,9 @@ const BookButton = ({ onBookClick, selectedHour }) => {
     description: ''
   };
 
-  useEffect(() => {
-    console.log('appt', appt);
-  }, [appt]);
+  // useEffect(() => {
+  //   console.log('appt', appt);
+  // }, [appt]);
 
   return (
     <button onClick={() => onBookClick(appt)} disabled={!isDate(selectedHour)}>

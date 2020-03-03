@@ -7,7 +7,7 @@ const initialState = {
   workdayEnd: 19,
   selectedDay: new Date(),
   selectedHour: null,
-  unavailableHours: [],
+  unavailable: [],
   appointments: [],
   appointmentDuration: 3
 };
@@ -27,7 +27,7 @@ export const GlobalProvider = ({ children }) => {
         workdayEnd: state.workdayEnd,
         selectedDay: state.selectedDay,
         selectedHour: state.selectedHour,
-        unavailableHours: state.unavailableHours,
+        unavailable: state.unavailable,
         appointments: state.appointments,
         appointmentDuration: state.appointmentDuration
       }}>

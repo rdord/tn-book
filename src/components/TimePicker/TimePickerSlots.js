@@ -8,8 +8,8 @@ const TimePickerSlots = ({
   selectedDay,
   selectedHour,
   onTimeClick,
-  unavailableHours,
-  setUnavailable,
+  unavailable,
+  setUnavailableTimes,
   isAdmin
 }) => {
   const startHour = set(selectedDay, { hours: workdayStart });
@@ -22,31 +22,31 @@ const TimePickerSlots = ({
   const eveningStarts = set(selectedDay, { hours: 16 });
   let hour = set(startHour, { minutes: 0, seconds: 0 });
 
-  useEffect(() => {
-    console.log('selectedHour', selectedHour);
-  }, [selectedHour]);
+  // useEffect(() => {
+  //   console.log('selectedHour', selectedHour);
+  // }, [selectedHour]);
 
-  useEffect(() => {
-    console.log('allWorkingHours', allWorkingHours);
-  }, [allWorkingHours]);
+  // useEffect(() => {
+  //   console.log('allWorkingHours', allWorkingHours);
+  // }, [allWorkingHours]);
 
-  useEffect(() => {
-    console.log('unavailableHours', unavailableHours);
-  }, [unavailableHours]);
+  // useEffect(() => {
+  //   console.log('unavailable', unavailable);
+  // }, [unavailable]);
 
   for (let i = 0; i <= workdayLength; i++) {
     const isSelectedHour = isSameHour(hour, selectedHour);
     const cloneHour = hour;
     let isUnavailableHour = false;
 
-    unavailableHours.forEach(h => {
+    unavailable.forEach(h => {
       if (isSameHour(h, cloneHour)) {
         isUnavailableHour = true;
         return;
       }
     });
 
-    console.log('isUnavailableHour', isUnavailableHour);
+    // console.log('isUnavailableHour', isUnavailableHour);
 
     const hourSlot = (
       <div
@@ -56,7 +56,7 @@ const TimePickerSlots = ({
         {format(hour, 'HH:mm')}
 
         {isAdmin && (
-          <span className='disable-slot' onClick={() => setUnavailable([cloneHour])}>
+          <span className='disable-slot' onClick={() => setUnavailableTimes([cloneHour])}>
             x
           </span>
         )}
@@ -84,7 +84,7 @@ const TimePickerSlots = ({
       }
     }
 
-    unavailableHours.forEach(uHour => {
+    unavailable.forEach(uHour => {
       allWorkingHours.forEach((wHour, index) => {
         if (isSameHour(uHour, wHour)) {
           allWorkingHours.splice(index, 1);
@@ -92,7 +92,7 @@ const TimePickerSlots = ({
       });
     });
 
-    setUnavailable(allWorkingHours);
+    setUnavailableTimes(allWorkingHours);
   };
 
   return (
