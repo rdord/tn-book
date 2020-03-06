@@ -1,28 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import './App.css';
 import Calendar from './components/Calendar/Calendar';
 import TimePicker from './components/TimePicker/TimePicker';
 import BookButton from './components/BookButton/BookButton';
-import { addHours, subHours } from 'date-fns';
+import { appointmentDuration } from './Constants';
+import { addHours, subHours, format } from 'date-fns';
 import { GlobalProvider } from './context/GlobalState';
 
 function App() {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [workdayStart, setWorkdayStart] = useState(9);
-  const [workdayEnd, setWorkdayEnd] = useState(19);
+  const [isAdmin, setIsAdmin] = useState(true);
+
+  // TODO: refactor and merge to selectedTime
   const [selectedDay, setSelectedDay] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState(null);
 
   // TODO: refactor to an {day: format(selectedDay, 'D'), times: []}
   const [unavailable, setUnavailable] = useState([]);
 
-  const [appointments, setAppointments] = useState([]);
-  const [appointmentDuration, setAppointmentDuration] = useState(3);
+  const [appointments, setAppointments] = useState([]); // TODO: remove when saved to firebase
 
   const onDateClick = day => setSelectedDay(day);
   const onTimeClick = hour => setSelectedHour(hour);
-  const setUnavailableTimes = hours => setUnavailable([...unavailable, ...hours]);
-  const setDuration = hours => setAppointmentDuration(hours);
+
+  // const addUnavailableTimes = time => setUnavailable([...unavailable, time]);
+  const addUnavailableTimes = time => {
+    const day = format(time, 'DDD');
+    const timeArray = [time];
+    setUnavailable([...unavailable, { day, timeArray }]);
+
+    // unavailable.forEach(t => {
+    //   if (t.day === day) {
+    //     t.times.push(time);
+    //   }
+    // });
+  };
+
+  const removeUnavailableTime = time => setUnavailable(unavailable.filter(t => t !== time));
   const onAdminClick = status => setIsAdmin(!isAdmin);
 
   const onBookClick = appt => {
@@ -46,24 +60,19 @@ function App() {
   return (
     <GlobalProvider>
       <div className='App'>
+        <Helmet>
+          <title>book appointment with tesa naja</title>
+        </Helmet>
         <button style={{ color: 'hotpink', float: 'right', margin: '10px 10px -30px' }} onClick={onAdminClick}>
           Admin
         </button>
-        <Calendar
-          workdayStart={workdayStart}
-          workdayEnd={workdayEnd}
-          selectedDay={selectedDay}
-          onDateClick={onDateClick}
-          isAdmin={isAdmin}
-        />
+        <Calendar selectedDay={selectedDay} onDateClick={onDateClick} isAdmin={isAdmin} />
         <TimePicker
-          workdayStart={workdayStart}
-          workdayEnd={workdayEnd}
           selectedDay={selectedDay}
           selectedHour={selectedHour}
           onTimeClick={onTimeClick}
           unavailable={unavailable}
-          setUnavailableTimes={setUnavailableTimes}
+          addUnavailableTimes={addUnavailableTimes}
           isAdmin={isAdmin}
         />
         <BookButton onBookClick={onBookClick} selectedHour={selectedHour} />

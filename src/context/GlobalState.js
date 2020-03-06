@@ -3,13 +3,10 @@ import AppReducer from './AppReducer';
 
 const initialState = {
   isAdmin: false,
-  workdayStart: 9,
-  workdayEnd: 19,
   selectedDay: new Date(),
   selectedHour: null,
   unavailable: [],
-  appointments: [],
-  appointmentDuration: 3
+  appointments: []
 };
 
 export const GlobalContext = createContext(initialState);
@@ -23,13 +20,10 @@ export const GlobalProvider = ({ children }) => {
     <GlobalContext.Provider
       value={{
         isAdmin: state.isAdmin,
-        workdayStart: state.workdayStart,
-        workdayEnd: state.workdayEnd,
         selectedDay: state.selectedDay,
         selectedHour: state.selectedHour,
         unavailable: state.unavailable,
-        appointments: state.appointments,
-        appointmentDuration: state.appointmentDuration
+        appointments: state.appointments
       }}>
       {children}
     </GlobalContext.Provider>

@@ -27,7 +27,11 @@
 .timepicker .slot.disabled {
   color: rgb(204, 204, 204);
   background: gray;
-  pointer-events: none;
+  /* pointer-events: none; */
+}
+
+.timepicker .slot.disabled .disable-slot {
+  color: inherit;
 }
 
 .timepicker .slot .disable-slot {

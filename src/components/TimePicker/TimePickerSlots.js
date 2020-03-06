@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './TimePicker.css';
+import { workdayStart, workdayEnd } from '../../Constants';
 import { differenceInHours, addHours, format, isBefore, isAfter, isSameHour, set } from 'date-fns';
 
-const TimePickerSlots = ({
-  workdayStart,
-  workdayEnd,
-  selectedDay,
-  selectedHour,
-  onTimeClick,
-  unavailable,
-  setUnavailableTimes,
-  isAdmin
-}) => {
+const TimePickerSlots = ({ selectedDay, selectedHour, onTimeClick, unavailable, addUnavailableTimes, isAdmin }) => {
   const startHour = set(selectedDay, { hours: workdayStart });
   const endHour = set(selectedDay, { hours: workdayEnd });
   const workdayLength = differenceInHours(endHour, startHour);
-  const allWorkingHours = [];
 
   const slots = { morning: [], afternoon: [], evening: [] };
   const morningEnds = set(selectedDay, { hours: 12, minutes: 1 });
@@ -39,12 +30,7 @@ const TimePickerSlots = ({
     const cloneHour = hour;
     let isUnavailableHour = false;
 
-    unavailable.forEach(h => {
-      if (isSameHour(h, cloneHour)) {
-        isUnavailableHour = true;
-        return;
-      }
-    });
+    unavailable.filter(h => (isSameHour(h, cloneHour) ? (isUnavailableHour = true) : null));
 
     // console.log('isUnavailableHour', isUnavailableHour);
 
@@ -56,7 +42,8 @@ const TimePickerSlots = ({
         {format(hour, 'HH:mm')}
 
         {isAdmin && (
-          <span className='disable-slot' onClick={() => setUnavailableTimes([cloneHour])}>
+          // TODO: handle toggle to enable the hourSlot back
+          <span className='disable-slot' onClick={() => addUnavailableTimes(cloneHour)}>
             x
           </span>
         )}
@@ -75,13 +62,12 @@ const TimePickerSlots = ({
   }
 
   const setDayUnavailable = () => {
-    if (isAdmin) {
-      let oneHour = set(startHour, { minutes: 0, seconds: 0 });
+    const allWorkingHours = [];
+    let oneHour = set(startHour, { minutes: 0, seconds: 0 });
 
-      for (let i = 0; i <= workdayLength; i++) {
-        allWorkingHours.push(oneHour);
-        oneHour = addHours(oneHour, 1);
-      }
+    for (let i = 0; i <= workdayLength; i++) {
+      allWorkingHours.push(oneHour);
+      oneHour = addHours(oneHour, 1);
     }
 
     unavailable.forEach(uHour => {
@@ -92,7 +78,7 @@ const TimePickerSlots = ({
       });
     });
 
-    setUnavailableTimes(allWorkingHours);
+    addUnavailableTimes(allWorkingHours);
   };
 
   return (
