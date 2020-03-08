@@ -1,9 +1,9 @@
 import React from 'react';
 import './Calendar.css';
-import { startOfWeek, addDays, format, addHours, getHours } from 'date-fns';
+import { startOfWeek, addDays, format } from 'date-fns';
 
-const CalendarWeekdays = ({ currentMonth }) => {
-  const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
+const CalendarWeekdays = () => {
+  const startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
   const days = [];
 
   for (let i = 0; i < 7; i++) {

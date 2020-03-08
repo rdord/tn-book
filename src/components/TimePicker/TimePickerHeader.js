@@ -1,7 +1,7 @@
 import React from 'react';
 import './TimePicker.css';
 
-const TimePickerHeader = props => {
+const TimePickerHeader = () => {
   return (
     <div className='header row'>
       <div className='col col-start'>Morning</div>
