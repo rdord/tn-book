@@ -8,20 +8,6 @@ export class AppointmentStore {
   isAdmin = true;
   appointments = [];
 
-  // todos = [
-  //   { id: 1, text: 'Buy eggs', completed: true },
-  //   { id: 2, text: 'Write a post', completed: false }
-  // ]
-
-  // get remainingTodos() {
-  //   return this.todos.filter(t => !t.completed).length
-  // }
-
-  // toggleTodo = index => {
-  //   this.todos[index].completed = !this.todos[index]
-  //     .completed
-  // }
-
   // UI
   toggleAdmin = () => (this.isAdmin = !this.isAdmin);
 
@@ -53,7 +39,6 @@ decorate(AppointmentStore, {
   unavailableTimes: observable,
   isAdmin: observable,
   appointments: observable
-  // remainingTodos: computed
 });
 
 export default createContext(new AppointmentStore());
