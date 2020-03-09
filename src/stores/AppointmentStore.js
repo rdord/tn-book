@@ -48,18 +48,26 @@ export class AppointmentStore {
     } else {
       this.unavailableTimes.push({ day, times: [time] });
     }
-
-    console.log('addUnavailableTime', toJS(this.unavailableTimes));
+    console.log(toJS(this.unavailableTimes));
   };
-  removeUnavailableTime = time => (this.unavailableTimes = this.unavailableTimes.filter(t => t !== time));
 
-  addUnavailableTimes = times => {
-    const concatDates = [...this.unavailableTimes, ...times];
-    const concatStrings = concatDates.map(t => format(t, 'd. MMM yyyy - HH:mm'));
-    const uniqueStrings = [...new Set(concatStrings)];
-    const uniqueDates = uniqueStrings.map(t => parse(t, 'd. MMM yyyy - HH:mm', new Date()));
+  // removeUnavailableTime = time => (this.unavailableTimes = this.unavailableTimes.filter(t => t !== time));
 
-    this.unavailableTimes = uniqueDates;
+  addUnavailableDay = times => {
+    const day = format(times[0], 'DDD');
+    let existingDayIndex = null;
+    const dayExists = this.unavailableTimes.find((obj, i) => {
+      if (obj.day === day) {
+        existingDayIndex = i;
+        return true;
+      }
+      return false;
+    });
+
+    if (dayExists) {
+      this.unavailableTimes.splice(existingDayIndex, 1);
+    }
+    this.unavailableTimes.push({ day, times });
 
     console.log(toJS(this.unavailableTimes));
   };
