@@ -85,6 +85,7 @@
 .calendar .body .disabled {
   color: var(--text-color-light);
   pointer-events: none;
+  color: blue;
 }
 
 .calendar .body .cell .bg {

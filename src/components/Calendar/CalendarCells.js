@@ -1,6 +1,17 @@
 import React, { useContext } from 'react';
 import './Calendar.css';
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, format, isSameMonth, isSameDay } from 'date-fns';
+import {
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  format,
+  isSameMonth,
+  isSameDay,
+  isBefore,
+  isToday
+} from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import AppointmentStore from '../../stores/AppointmentStore';
 
@@ -15,16 +26,17 @@ const CalendarCells = observer(() => {
   let days = [];
   let day = startDate;
 
-  // TODO: disable calendar days before NOW
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       const cloneDay = day; //to remove the onDateClick warning
       const isCurrentMonthDay = isSameMonth(day, store.selectedTime);
+      const isBeforeToday = isBefore(day, new Date());
+      const isDisabled = !isCurrentMonthDay || (isBeforeToday && !isToday(day));
       const isSelectedDay = isSameDay(day, store.selectedTime);
 
       days.push(
         <div
-          className={`col cell ${!isCurrentMonthDay ? 'disabled' : isSelectedDay && 'selected'}`}
+          className={`col cell ${isDisabled ? 'disabled' : isSelectedDay && 'selected'}`}
           key={day.toString()}
           onClick={() => store.selectTime(cloneDay)}>
           <span className='number'>{format(day, 'd')}</span>
