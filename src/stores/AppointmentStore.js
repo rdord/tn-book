@@ -18,6 +18,10 @@ export class AppointmentStore {
     return endOfWeek(monthEnd);
   }
 
+  get allUnavailableTimes() {
+    return this.unavailableTimes.reduce((arr, obj) => [...arr, ...obj.times], []);
+  }
+
   // UI
   toggleAdmin = () => (this.isAdmin = !this.isAdmin);
 

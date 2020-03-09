@@ -5,6 +5,7 @@ import { differenceInHours, addHours, format, isBefore, isAfter, isSameHour, set
 import { observer } from 'mobx-react-lite';
 import AppointmentStore from '../../stores/AppointmentStore';
 import { getHoursBetween } from '../../utils/utils';
+import { toJS } from 'mobx';
 
 const TimePickerSlots = observer(() => {
   const store = useContext(AppointmentStore);
@@ -22,16 +23,8 @@ const TimePickerSlots = observer(() => {
     const isSelectedHour = isSameHour(hour, store.selectedTime);
     const cloneHour = hour;
     let isUnavailableHour = false;
-    const day = format(cloneHour, 'DDD');
 
-    // store.unavailableTimes.filter(h => (isSameHour(h, cloneHour) ? (isUnavailableHour = true) : null));
-
-    store.unavailableTimes.find(obj => {
-      if (obj.day === day) {
-        obj.times.find(h => (isSameHour(h, cloneHour) ? (isUnavailableHour = true) : null));
-      }
-      return obj;
-    });
+    store.allUnavailableTimes.find(time => (isUnavailableHour = isSameHour(time, cloneHour)));
 
     // TODO: disable hours before NOW and 2 hours after NOW
     const hourSlot = (
