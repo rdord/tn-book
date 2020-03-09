@@ -7,7 +7,7 @@ const TimePicker = props => {
   return (
     <div className='timepicker'>
       <TimePickerHeader />
-      <TimePickerSlots {...props} />
+      <TimePickerSlots />
     </div>
   );
 };

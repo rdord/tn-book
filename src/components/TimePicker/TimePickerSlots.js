@@ -1,49 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import './TimePicker.css';
 import { workdayStart, workdayEnd } from '../../Constants';
 import { differenceInHours, addHours, format, isBefore, isAfter, isSameHour, set } from 'date-fns';
+import { observer } from 'mobx-react-lite';
+import AppointmentStore from '../../stores/AppointmentStore';
+import { getHoursBetween } from '../../utils/utils';
+import { toJS } from 'mobx';
 
-const TimePickerSlots = ({ selectedDay, selectedHour, onTimeClick, unavailable, addUnavailableTimes, isAdmin }) => {
-  const startHour = set(selectedDay, { hours: workdayStart });
-  const endHour = set(selectedDay, { hours: workdayEnd });
+const TimePickerSlots = observer(() => {
+  const store = useContext(AppointmentStore);
+
+  const startHour = set(store.selectedTime, { hours: workdayStart });
+  const endHour = set(store.selectedTime, { hours: workdayEnd });
   const workdayLength = differenceInHours(endHour, startHour);
 
   const slots = { morning: [], afternoon: [], evening: [] };
-  const morningEnds = set(selectedDay, { hours: 12, minutes: 1 });
-  const eveningStarts = set(selectedDay, { hours: 16 });
+  const morningEnds = set(store.selectedTime, { hours: 12, minutes: 1 });
+  const eveningStarts = set(store.selectedTime, { hours: 16 });
   let hour = set(startHour, { minutes: 0, seconds: 0 });
 
-  // useEffect(() => {
-  //   console.log('selectedHour', selectedHour);
-  // }, [selectedHour]);
-
-  // useEffect(() => {
-  //   console.log('allWorkingHours', allWorkingHours);
-  // }, [allWorkingHours]);
-
-  // useEffect(() => {
-  //   console.log('unavailable', unavailable);
-  // }, [unavailable]);
-
   for (let i = 0; i <= workdayLength; i++) {
-    const isSelectedHour = isSameHour(hour, selectedHour);
+    const isSelectedHour = isSameHour(hour, store.selectedTime);
     const cloneHour = hour;
     let isUnavailableHour = false;
 
-    unavailable.filter(h => (isSameHour(h, cloneHour) ? (isUnavailableHour = true) : null));
+    store.allUnavailableTimes.find(time => (isUnavailableHour = isSameHour(time, cloneHour)));
 
-    // console.log('isUnavailableHour', isUnavailableHour);
-
+    // TODO: disable hours before NOW and 2 hours after NOW
     const hourSlot = (
       <div
         className={`slot ${isUnavailableHour ? 'disabled' : isSelectedHour && 'selected'}`}
-        onClick={() => onTimeClick(cloneHour)}
+        onClick={() => store.selectTime(cloneHour)}
         key={hour.toString()}>
         {format(hour, 'HH:mm')}
 
-        {isAdmin && (
+        {store.isAdmin && (
           // TODO: handle toggle to enable the hourSlot back
-          <span className='disable-slot' onClick={() => addUnavailableTimes(cloneHour)}>
+          <span className='disable-slot' onClick={() => store.addUnavailableTime(cloneHour)}>
             x
           </span>
         )}
@@ -62,28 +55,13 @@ const TimePickerSlots = ({ selectedDay, selectedHour, onTimeClick, unavailable, 
   }
 
   const setDayUnavailable = () => {
-    const allWorkingHours = [];
-    let oneHour = set(startHour, { minutes: 0, seconds: 0 });
-
-    for (let i = 0; i <= workdayLength; i++) {
-      allWorkingHours.push(oneHour);
-      oneHour = addHours(oneHour, 1);
-    }
-
-    unavailable.forEach(uHour => {
-      allWorkingHours.forEach((wHour, index) => {
-        if (isSameHour(uHour, wHour)) {
-          allWorkingHours.splice(index, 1);
-        }
-      });
-    });
-
-    addUnavailableTimes(allWorkingHours);
+    const workingHoursInDay = getHoursBetween(startHour, endHour);
+    store.addUnavailableDay(workingHoursInDay);
   };
 
   return (
     <div className='slots row'>
-      {isAdmin && (
+      {store.isAdmin && (
         <button
           style={{ color: 'hotpink', position: 'absolute', right: '10px', top: '-19px' }}
           onClick={setDayUnavailable}>
@@ -96,6 +74,6 @@ const TimePickerSlots = ({ selectedDay, selectedHour, onTimeClick, unavailable, 
       <div className='col col-end'>{slots.evening}</div>
     </div>
   );
-};
+});
 
 export default TimePickerSlots;
