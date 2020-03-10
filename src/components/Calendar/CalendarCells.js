@@ -31,12 +31,12 @@ const CalendarCells = observer(() => {
       const cloneDay = day; //to remove the onDateClick warning
       const isCurrentMonthDay = isSameMonth(day, store.selectedTime);
       const isBeforeToday = isBefore(day, new Date());
-      const isDisabled = !isCurrentMonthDay || (isBeforeToday && !isToday(day));
+      const isDisabledDay = !isCurrentMonthDay || (isBeforeToday && !isToday(day));
       const isSelectedDay = isSameDay(day, store.selectedTime);
 
       days.push(
         <div
-          className={`col cell ${isDisabled ? 'disabled' : isSelectedDay && 'selected'}`}
+          className={`col cell ${isDisabledDay ? 'disabled' : isSelectedDay && 'selected'}`}
           key={day.toString()}
           onClick={() => store.selectTime(cloneDay)}>
           <span className='number'>{format(day, 'd')}</span>

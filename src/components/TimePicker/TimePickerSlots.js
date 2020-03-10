@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import './TimePicker.css';
-import { workdayStart, workdayEnd } from '../../Constants';
+import { workdayStart, workdayEnd, breakBeforeBooking } from '../../Constants';
 import { differenceInHours, addHours, format, isBefore, isAfter, isSameHour, set } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import AppointmentStore from '../../stores/AppointmentStore';
@@ -26,10 +26,12 @@ const TimePickerSlots = observer(() => {
 
     store.allUnavailableTimes.find(time => (isUnavailableHour = isSameHour(time, cloneHour)));
 
-    // TODO: disable hours before NOW and 2 hours after NOW
+    const hoursInPast = isBefore(hour, addHours(new Date(), breakBeforeBooking));
+    const isDisabledHour = isUnavailableHour || hoursInPast;
+
     const hourSlot = (
       <div
-        className={`slot ${isUnavailableHour ? 'disabled' : isSelectedHour && 'selected'}`}
+        className={`slot ${isDisabledHour ? 'disabled' : isSelectedHour && 'selected'}`}
         onClick={() => store.selectTime(cloneHour)}
         key={hour.toString()}>
         {format(hour, 'HH:mm')}
