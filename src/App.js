@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { Helmet } from 'react-helmet';
+import { observer } from 'mobx-react-lite';
 import './App.css';
 import Calendar from './components/Calendar/Calendar';
 import TimePicker from './components/TimePicker/TimePicker';
 import BookButton from './components/BookButton/BookButton';
-import { observer } from 'mobx-react-lite';
+
 import AppointmentStore from './stores/AppointmentStore';
 
 // TODO: write react and mobx tests
@@ -18,7 +19,7 @@ const App = observer(() => {
       <Helmet>
         <title>book appointment with tesa naja</title>
       </Helmet>
-      <button className='admin-button' onClick={store.toggleAdmin}>
+      <button type='button' className='admin-button' onClick={store.toggleAdmin}>
         Admin
       </button>
       <Calendar />

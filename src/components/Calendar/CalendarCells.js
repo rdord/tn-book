@@ -28,7 +28,7 @@ const CalendarCells = observer(() => {
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
-      const cloneDay = day; //to remove the onDateClick warning
+      const cloneDay = day; // to remove the onDateClick warning
       const isCurrentMonthDay = isSameMonth(day, store.selectedTime);
       const isBeforeToday = isBefore(day, new Date());
       const isDisabledDay = !isCurrentMonthDay || (isBeforeToday && !isToday(day));
