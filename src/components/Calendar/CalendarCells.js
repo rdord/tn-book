@@ -1,58 +1,45 @@
 import React, { useContext } from 'react';
 import './Calendar.css';
-import {
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  addDays,
-  format,
-  isSameMonth,
-  isSameDay,
-  isBefore,
-  isToday
-} from 'date-fns';
+import { addDays, format, isSameMonth, isSameDay, isBefore, isToday } from 'date-fns';
 import { observer } from 'mobx-react-lite';
+import { daysInWeek } from '../../Constants';
 import AppointmentStore from '../../stores/AppointmentStore';
 
 const CalendarCells = observer(() => {
   const store = useContext(AppointmentStore);
-  const monthStart = startOfMonth(store.selectedTime);
-  const startDate = startOfWeek(monthStart);
-  const monthEnd = endOfMonth(store.selectedTime);
-  const endDate = endOfWeek(monthEnd);
 
-  const rows = [];
-  let days = [];
-  let day = startDate;
+  const calendarRows = [];
+  let dayCells = [];
+  let currentDay = store.startDate;
 
-  while (day <= endDate) {
-    for (let i = 0; i < 7; i++) {
-      const cloneDay = day; // to remove the onDateClick warning
-      const isCurrentMonthDay = isSameMonth(day, store.selectedTime);
-      const isBeforeToday = isBefore(day, new Date());
-      const isDisabledDay = !isCurrentMonthDay || (isBeforeToday && !isToday(day));
-      const isSelectedDay = isSameDay(day, store.selectedTime);
+  // Generate cells for calendar days
+  while (currentDay <= store.endDate) {
+    for (let i = 0; i < daysInWeek; i++) {
+      const isCurrentMonthDay = isSameMonth(currentDay, store.selectedTime);
+      const isBeforeToday = isBefore(currentDay, new Date());
+      const isDisabledDay = !isCurrentMonthDay || (isBeforeToday && !isToday(currentDay));
+      const isSelectedDay = isSameDay(currentDay, store.selectedTime);
+      const cloneDay = currentDay; // to remove the onDateClick warning
 
-      days.push(
+      dayCells.push(
         <div
           className={`col cell ${isDisabledDay ? 'disabled' : isSelectedDay && 'selected'}`}
-          key={day.toString()}
+          key={currentDay.toString()}
           onClick={() => store.selectTime(cloneDay)}>
-          <span className='number'>{format(day, 'd')}</span>
+          <span className='number'>{format(currentDay, 'd')}</span>
         </div>
       );
-      day = addDays(day, 1);
+      currentDay = addDays(currentDay, 1);
     }
-    rows.push(
-      <div className='row' key={day.toString()}>
-        {days}
+    calendarRows.push(
+      <div className='row' key={currentDay.toString()}>
+        {dayCells}
       </div>
     );
-    days = [];
+    dayCells = [];
   }
 
-  return <div className='body'>{rows}</div>;
+  return <div className='body'>{calendarRows}</div>;
 });
 
 export default CalendarCells;

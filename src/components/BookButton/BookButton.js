@@ -8,6 +8,7 @@ import { addHours, subHours } from 'date-fns';
 
 const BookButton = observer(() => {
   const store = useContext(AppointmentStore);
+
   const appt = {
     start: store.selectedTime,
     duration: appointmentDuration,
@@ -16,7 +17,7 @@ const BookButton = observer(() => {
   };
 
   const onBookClick = appt => {
-    const prevAppoimentDuration = appointmentDuration;
+    const prevAppoimentDuration = appointmentDuration; // currently all appointments are 3 hours
     let hour = subHours(appt.start, prevAppoimentDuration);
     let allHours = [];
     store.addAppointment(appt);

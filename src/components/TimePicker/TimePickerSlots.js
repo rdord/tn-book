@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import './TimePicker.css';
-import { workdayStart, workdayEnd, breakBeforeBooking } from '../../Constants';
 import { differenceInHours, addHours, format, isBefore, isAfter, isSameHour, set } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import AppointmentStore from '../../stores/AppointmentStore';
+import { workdayStart, workdayEnd, breakBeforeBooking } from '../../Constants';
 import { getHoursBetween } from '../../utils/utils';
-import { toJS } from 'mobx';
+import AppointmentStore from '../../stores/AppointmentStore';
 
 const TimePickerSlots = observer(() => {
   const store = useContext(AppointmentStore);

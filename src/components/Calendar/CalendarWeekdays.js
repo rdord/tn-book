@@ -1,23 +1,25 @@
 import React from 'react';
 import './Calendar.css';
 import { startOfWeek, addDays, format } from 'date-fns';
+import { daysInWeek } from '../../Constants';
 
 const CalendarWeekdays = () => {
   const startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
-  const days = [];
+  const dayColumns = [];
 
-  for (let i = 0; i < 7; i++) {
-    const day = addDays(startDate, i);
-    const formatedDay = format(day, 'EEEE');
+  // Generate names of the days of the week
+  for (let i = 0; i < daysInWeek; i++) {
+    const currentDay = addDays(startDate, i);
+    const formatedDay = format(currentDay, 'EEEE'); // Monday, Tuesday, ..., Sunday
 
-    days.push(
-      <div className='col col-center' key={day.toString()}>
+    dayColumns.push(
+      <div className='col col-center' key={currentDay.toString()}>
         {formatedDay}
       </div>
     );
   }
 
-  return <div className='days row'>{days}</div>;
+  return <div className='days row'>{dayColumns}</div>;
 };
 
 export default CalendarWeekdays;
