@@ -1,6 +1,16 @@
 import { createContext } from 'react';
 import { decorate, observable, computed, toJS } from 'mobx';
-import { addMonths, subMonths, set, format, parse, startOfMonth, startOfWeek, endOfMonth, endOfWeek } from 'date-fns';
+import {
+  addMonths,
+  subMonths,
+  set,
+  format,
+  startOfMonth,
+  startOfWeek,
+  endOfMonth,
+  endOfWeek,
+  isSameHour
+} from 'date-fns';
 
 export class AppointmentStore {
   selectedTime = set(new Date(), { hours: 0 });
@@ -34,7 +44,6 @@ export class AppointmentStore {
   addAppointment = appt => this.appointments.push(appt);
   removeAppointment = appt => (this.appointments = this.appointments.filter(a => a !== appt));
 
-  // TODO: refactor to an {day: format(selectedDay, 'D'), times: []}
   addUnavailableTime = time => {
     const day = format(time, 'DDD');
     let dayExists = false;
@@ -52,10 +61,29 @@ export class AppointmentStore {
     } else {
       this.unavailableTimes.push({ day, times: [time] });
     }
-    console.log(toJS(this.unavailableTimes));
   };
 
-  // removeUnavailableTime = time => (this.unavailableTimes = this.unavailableTimes.filter(t => t !== time));
+  removeUnavailableTime = time => {
+    const day = format(time, 'DDD');
+    let emptyDayIndex = null;
+
+    const updatedDay = this.unavailableTimes.map((obj, i) => {
+      if (obj.day === day) {
+        obj.times = obj.times.filter(t => !isSameHour(t, time));
+
+        if (obj.times.length < 1) {
+          emptyDayIndex = i;
+        }
+      }
+      return obj;
+    });
+
+    if (emptyDayIndex !== null) {
+      updatedDay.splice(emptyDayIndex, 1);
+    }
+
+    this.unavailableTimes = updatedDay;
+  };
 
   addUnavailableDay = times => {
     const day = format(times[0], 'DDD');
@@ -71,9 +99,8 @@ export class AppointmentStore {
     if (dayExists) {
       this.unavailableTimes.splice(existingDayIndex, 1);
     }
-    this.unavailableTimes.push({ day, times });
 
-    console.log(toJS(this.unavailableTimes));
+    this.unavailableTimes.push({ day, times });
   };
 }
 

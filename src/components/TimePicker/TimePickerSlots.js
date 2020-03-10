@@ -9,54 +9,61 @@ import AppointmentStore from '../../stores/AppointmentStore';
 const TimePickerSlots = observer(() => {
   const store = useContext(AppointmentStore);
 
-  const startHour = set(store.selectedTime, { hours: workdayStart });
-  const endHour = set(store.selectedTime, { hours: workdayEnd });
-  const workdayLength = differenceInHours(endHour, startHour);
+  const startTime = set(store.selectedTime, { hours: workdayStart });
+  const endTime = set(store.selectedTime, { hours: workdayEnd });
+  const workdayLength = differenceInHours(endTime, startTime);
 
   const slots = { morning: [], afternoon: [], evening: [] };
   const morningEnds = set(store.selectedTime, { hours: 12, minutes: 1 });
   const eveningStarts = set(store.selectedTime, { hours: 16 });
-  let hour = set(startHour, { minutes: 0, seconds: 0 });
+  let time = set(startTime, { minutes: 0, seconds: 0 });
+
+  const toggleUnavailableTime = (isDisabled, time) => {
+    if (isDisabled) {
+      store.removeUnavailableTime(time);
+    } else {
+      store.addUnavailableTime(time);
+    }
+  };
 
   for (let i = 0; i <= workdayLength; i++) {
-    const isSelectedHour = isSameHour(hour, store.selectedTime);
-    const cloneHour = hour;
-    let isUnavailableHour = false;
+    const isTimeSelected = isSameHour(time, store.selectedTime);
+    const cloneTime = time;
+    let isTimeUnavailable = false;
 
-    store.allUnavailableTimes.find(time => (isUnavailableHour = isSameHour(time, cloneHour)));
+    store.allUnavailableTimes.find(t => (isTimeUnavailable = isSameHour(t, cloneTime)));
 
-    const hoursInPast = isBefore(hour, addHours(new Date(), breakBeforeBooking));
-    const isDisabledHour = isUnavailableHour || hoursInPast;
+    const hoursInPast = isBefore(time, addHours(new Date(), breakBeforeBooking));
+    const isTimeDisabled = isTimeUnavailable || hoursInPast;
 
     const hourSlot = (
       <div
-        className={`slot ${isDisabledHour ? 'disabled' : isSelectedHour && 'selected'}`}
-        onClick={() => store.selectTime(cloneHour)}
-        key={hour.toString()}>
-        {format(hour, 'HH:mm')}
+        className={`slot ${isTimeDisabled ? 'disabled' : isTimeSelected && 'selected'}`}
+        onClick={() => store.selectTime(cloneTime)}
+        key={time.toString()}>
+        {format(time, 'HH:mm')}
 
-        {store.isAdmin && (
-          // TODO: handle toggle to enable the hourSlot back
-          <span className='disable-slot' onClick={() => store.addUnavailableTime(cloneHour)}>
+        {store.isAdmin && !hoursInPast && (
+          <span className='disable-slot' onClick={() => toggleUnavailableTime(isTimeDisabled, cloneTime)}>
             x
           </span>
         )}
       </div>
     );
 
-    if (isBefore(hour, morningEnds)) {
+    if (isBefore(time, morningEnds)) {
       slots.morning.push(hourSlot);
-    } else if (isAfter(hour, eveningStarts)) {
+    } else if (isAfter(time, eveningStarts)) {
       slots.evening.push(hourSlot);
     } else {
       slots.afternoon.push(hourSlot);
     }
 
-    hour = addHours(hour, 1);
+    time = addHours(time, 1);
   }
 
   const setDayUnavailable = () => {
-    const workingHoursInDay = getHoursBetween(startHour, endHour);
+    const workingHoursInDay = getHoursBetween(startTime, endTime);
     store.addUnavailableDay(workingHoursInDay);
   };
 
@@ -64,6 +71,7 @@ const TimePickerSlots = observer(() => {
     <div className='slots row'>
       {store.isAdmin && (
         <button
+          type='button'
           style={{ color: 'hotpink', position: 'absolute', right: '10px', top: '-19px' }}
           onClick={setDayUnavailable}>
           Set day as unavailable
